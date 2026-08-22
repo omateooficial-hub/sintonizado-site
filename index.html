@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#080706">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Existe um sinal.">
+  <title>SINAL</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <canvas id="field" aria-hidden="true"></canvas>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="glow" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <span>TRANSMISSÃO // 001</span>
+    <button id="soundBtn" class="top-btn" type="button">SOM <b id="soundState">ON</b></button>
+  </header>
+
+  <main id="app">
+    <section id="screenIntro" class="screen active">
+      <div class="intro-wrap">
+        <p id="returning" class="micro hidden">VOCÊ VOLTOU.</p>
+        <h1><span>MOVA-SE</span><em>DEVAGAR.</em></h1>
+        <p class="lead">Existe alguma coisa atravessando o ruído.</p>
+        <button id="startBtn" class="action" type="button">
+          <span>INICIAR TRANSMISSÃO</span><i></i>
+        </button>
+      </div>
+      <p class="bottom-hint desktop">MOUSE • ARRASTE • RODA</p>
+      <p class="bottom-hint mobile">TOQUE • ARRASTE</p>
+    </section>
+
+    <section id="screenTuner" class="screen tuner-screen">
+      <div class="tuner-top">
+        <div>
+          <p class="micro">PROCURE O SINAL</p>
+          <p id="status" class="status">INTERFERÊNCIA</p>
+        </div>
+        <div class="readout"><span id="freqText">88.9</span><small>FM</small></div>
+      </div>
+
+      <div id="dial" class="dial" role="slider" tabindex="0"
+           aria-label="Sintonizador FM" aria-valuemin="88" aria-valuemax="108" aria-valuenow="88.9">
+        <div id="scale" class="scale"></div>
+        <div class="needle"><i></i></div>
+        <div class="shade left"></div>
+        <div class="shade right"></div>
+      </div>
+
+      <div class="tuner-bottom">
+        <p class="desktop">ARRASTE, USE A RODA DO MOUSE OU AS SETAS</p>
+        <p class="mobile">ARRASTE PARA SINTONIZAR</p>
+        <div class="meter">
+          <span>SINAL</span>
+          <div><i id="meterFill"></i></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="screenLocked" class="screen center-screen">
+      <div class="lock-wrap">
+        <p class="micro">FREQUÊNCIA ESTÁVEL</p>
+        <h2>SINTONIZADO</h2>
+        <canvas id="musicViz" aria-hidden="true"></canvas>
+        <p class="locked-freq">104.7 FM</p>
+      </div>
+    </section>
+
+    <section id="screenEnd" class="screen center-screen">
+      <div class="end-wrap">
+        <p class="micro">SINAL 01 RECEBIDO</p>
+        <h2>A TRANSMISSÃO<br>CONTINUA.</h2>
+        <p class="next">O PRÓXIMO SINAL AINDA NÃO FOI LIBERADO.</p>
+        <button id="againBtn" class="action action-small" type="button">
+          <span>OUVIR NOVAMENTE</span>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <script src="./audio-data.js"></script>
+  <script src="./script.js"></script>
+</body>
+</html>
