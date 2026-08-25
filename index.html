@@ -15,7 +15,7 @@
   <div class="glow" aria-hidden="true"></div>
 
   <header class="topbar">
-    <span>TRANSMISSÃO // 001</span>
+    <span id="transmissionLabel">TRANSMISSÃO // 001</span>
     <button id="soundBtn" class="top-btn" type="button">SOM <b id="soundState">ON</b></button>
   </header>
 
@@ -29,7 +29,7 @@
           <span>INICIAR TRANSMISSÃO</span><i></i>
         </button>
       </div>
-      <p class="bottom-hint desktop">MOUSE • ARRASTE • RODA</p>
+      <p class="bottom-hint desktop">CLIQUE • SEGURE • ARRASTE PARA SINTONIZAR</p>
       <p class="bottom-hint mobile">TOQUE • ARRASTE</p>
     </section>
 
@@ -42,16 +42,24 @@
         <div class="readout"><span id="freqText">88.9</span><small>FM</small></div>
       </div>
 
-      <div id="dial" class="dial" role="slider" tabindex="0"
-           aria-label="Sintonizador FM" aria-valuemin="88" aria-valuemax="108" aria-valuenow="88.9">
+      <div id="dial" class="dial" aria-label="Sintonizador FM">
         <div id="scale" class="scale"></div>
         <div class="needle"><i></i></div>
         <div class="shade left"></div>
         <div class="shade right"></div>
+
+        <input id="freqSlider"
+               class="freq-slider"
+               type="range"
+               min="88"
+               max="108"
+               step="0.1"
+               value="88.9"
+               aria-label="Arraste para sintonizar entre 88 e 108 FM">
       </div>
 
       <div class="tuner-bottom">
-        <p class="desktop">ARRASTE, USE A RODA DO MOUSE OU AS SETAS</p>
+        <p class="desktop">CLIQUE + SEGURE + ARRASTE • SOLTE PARA PARAR • RODA / SETAS</p>
         <p class="mobile">ARRASTE PARA SINTONIZAR</p>
         <div class="meter">
           <span>SINAL</span>
@@ -73,17 +81,607 @@
       <div class="end-wrap">
         <p class="micro">SINAL 01 RECEBIDO</p>
         <h2>A TRANSMISSÃO<br>CONTINUA.</h2>
-        <p class="next">O PRÓXIMO SINAL AINDA NÃO FOI LIBERADO.</p>
-        <button id="againBtn" class="action action-small" type="button">
-          <span>OUVIR NOVAMENTE</span>
+        <p class="next">SINAL 02 DISPONÍVEL. CONTINUANDO...</p>
+        <button id="phase1NextBtn" class="action action-small campaign-next" type="button">
+          <span>CONTINUAR TRANSMISSÃO</span><i></i>
+        </button>
+        <button id="againBtn" class="campaign-replay" type="button">
+          OUVIR NOVAMENTE
         </button>
       </div>
     </section>
+
+    <section id="screenPhase2Intro" class="screen center-screen phase2-intro">
+      <div class="phase2-bg-mark" aria-hidden="true">02</div>
+      <div class="phase2-copy">
+        <p id="phase2Return" class="micro">VOCÊ VOLTOU.</p>
+        <h2>O SINAL<br><em>NÃO ESTÁ MAIS LONGE.</em></h2>
+        <p class="phase2-sub">Agora você não precisa procurar.</p>
+        <button id="phase2BeginBtn" class="action action-small" type="button">
+          <span>SENTIR O SINAL</span><i></i>
+        </button>
+      </div>
+    </section>
+
+    <section id="screenPhase2Hold" class="screen phase2-hold">
+      <div id="blurPortrait" class="blur-portrait" aria-hidden="true"></div>
+      <div class="phase2-beam" aria-hidden="true"></div>
+      <div class="pulse-lines" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+
+      <div class="hold-overlay">
+        <p class="micro">SINAL 02 // PRESENÇA</p>
+        <h2>SEGURE PARA<br>SENTIR.</h2>
+        <p id="holdStatus" class="hold-status">O SINAL ESTÁ RESPONDENDO</p>
+
+        <button id="holdZone" class="hold-zone hold-zone-v2" type="button"
+                aria-label="Segure para sentir o sinal">
+          <span class="hold-core"></span>
+          <span class="hold-ring"><i id="holdProgress"></i></span>
+          <span class="hold-label desktop">MANTENHA O MOUSE PRESSIONADO</span>
+          <span class="hold-label mobile">MANTENHA O DEDO PRESSIONADO</span>
+        </button>
+      </div>
+    </section>
+
+    <section id="screenPhase2Received" class="screen center-screen phase2-received">
+      <div class="phase2-full-image" aria-hidden="true"></div>
+      <div class="received-vignette" aria-hidden="true"></div>
+      <div class="received-wrap">
+        <p class="micro">PRESENÇA DETECTADA</p>
+        <h2>O SINAL<br>GANHOU FORMA.</h2>
+        <canvas id="phase2Viz" aria-hidden="true"></canvas>
+        <p class="phase2-track-label">TRANSMISSÃO 02</p>
+      </div>
+    </section>
+
+    <section id="screenPhase2End" class="screen center-screen phase2-end">
+      <div class="phase2-bg-mark phase2-bg-mark-end" aria-hidden="true">02</div>
+      <div class="end-wrap">
+        <p class="micro">SEGUNDO SINAL RECEBIDO</p>
+        <h2>VOCÊ ESTÁ<br>MAIS PERTO.</h2>
+        <p class="next">O SINAL 03 FOI LIBERADO. CONTINUANDO...</p>
+        <button id="phase2NextBtn" class="action action-small campaign-next" type="button">
+          <span>CONTINUAR PARA O ALINHAMENTO</span><i></i>
+        </button>
+        <button id="phase2AgainBtn" class="campaign-replay" type="button">
+          SENTIR NOVAMENTE
+        </button>
+      </div>
+    </section>
+
+
+    <section id="screenPhase3Intro" class="screen center-screen phase3-intro">
+      <div class="phase3-index" aria-hidden="true">03</div>
+      <div class="phase3-intro-copy">
+        <p id="phase3Return" class="micro">NOVO PADRÃO DETECTADO.</p>
+        <h2>VOCÊ ESTÁ<br>MAIS PERTO.</h2>
+        <p class="phase3-intro-line">MAS O SINAL AINDA ESTÁ DIVIDIDO.</p>
+        <button id="phase3BeginBtn" class="action action-small" type="button">
+          <span>ENTRAR NO ALINHAMENTO</span><i></i>
+        </button>
+      </div>
+    </section>
+
+    <section id="screenPhase3Align" class="screen phase3-align">
+      <div id="fragmentStage" class="fragment-stage" aria-hidden="true">
+        <div class="p3-frag f1" data-x="-92" data-y="-34"></div>
+        <div class="p3-frag f2" data-x="74" data-y="-58"></div>
+        <div class="p3-frag f3" data-x="-54" data-y="66"></div>
+        <div class="p3-frag f4" data-x="96" data-y="38"></div>
+        <div class="p3-frag f5" data-x="-78" data-y="24"></div>
+        <div class="p3-frag f6" data-x="52" data-y="-26"></div>
+      </div>
+
+      <div class="p3-cold-vignette" aria-hidden="true"></div>
+      <div id="alignTarget" class="align-target" aria-hidden="true"><i></i></div>
+
+      <div class="p3-align-ui">
+        <div>
+          <p class="micro">03 // ALINHAMENTO</p>
+          <h2>ENCONTRE<br>O PONTO.</h2>
+        </div>
+        <div class="p3-align-status">
+          <span id="alignState">PARTES INSTÁVEIS</span>
+          <div class="p3-align-meter"><i id="alignFill"></i></div>
+          <small class="desktop">MOVIMENTE O MOUSE</small>
+          <small class="mobile">ARRASTE O DEDO PELA TELA</small>
+        </div>
+      </div>
+    </section>
+
+    <section id="screenPhase3Received" class="screen center-screen phase3-received">
+      <div id="phase3Hero" class="phase3-hero" aria-hidden="true"></div>
+      <div class="phase3-received-overlay" aria-hidden="true"></div>
+      <div class="p3-received-copy">
+        <p class="micro">ESTRUTURA COINCIDENTE</p>
+        <h2>ALINHADO.</h2>
+        <div class="p3-light-line" aria-hidden="true"><i id="p3LightPulse"></i></div>
+        <p class="p3-transmission-label">TRANSMISSÃO 03</p>
+      </div>
+      <div id="freqHint" class="freq-hint" aria-hidden="true"></div>
+    </section>
+
+    <section id="screenPhase3End" class="screen center-screen phase3-end">
+      <div class="phase3-index phase3-index-end" aria-hidden="true">04</div>
+      <div class="end-wrap">
+        <p class="micro">03 // ALINHAMENTO CONCLUÍDO</p>
+        <h2>AGORA VOCÊ<br>CONSEGUE VER.</h2>
+        <p class="next">A REVELAÇÃO ESTÁ DISPONÍVEL. CONTINUANDO...</p>
+        <button id="phase3NextBtn" class="action action-small campaign-next" type="button">
+          <span>CONTINUAR PARA A REVELAÇÃO</span><i></i>
+        </button>
+        <button id="phase3AgainBtn" class="campaign-replay" type="button">
+          ALINHAR NOVAMENTE
+        </button>
+      </div>
+    </section>
+
+
+    <section id="screenPhase4Intro" class="screen center-screen phase4-intro">
+      <div class="phase4-intro-bg" aria-hidden="true"></div>
+      <div class="phase4-intro-copy">
+        <p id="phase4Return" class="micro">VOCÊ CONSEGUIU CHEGAR ATÉ AQUI.</p>
+        <h2>AGORA<br><em>VEJA.</em></h2>
+        <p class="phase4-sub">O sinal não precisa mais se esconder.</p>
+        <button id="phase4BeginBtn" class="action action-small" type="button">
+          <span>INICIAR REVELAÇÃO</span><i></i>
+        </button>
+      </div>
+    </section>
+
+    <section id="screenPhase4Reveal" class="screen phase4-reveal">
+      <div id="phase4Cover" class="phase4-cover" aria-hidden="true"></div>
+      <div class="phase4-mask" aria-hidden="true"></div>
+      <div class="phase4-scan" aria-hidden="true"></div>
+
+      <div class="phase4-sticky">
+        <p class="micro">04 // REVELAÇÃO</p>
+        <div class="phase4-word-build" aria-hidden="true">
+          <span id="p4PartA">F R E Q</span>
+          <span id="p4PartB">___UÊNCIA</span>
+        </div>
+
+        <div class="phase4-guide">
+          <span id="phase4GuideText">CONTINUE.</span>
+          <div class="phase4-progress"><i id="phase4Progress"></i></div>
+          <small class="desktop">SCROLL PARA REVELAR</small>
+          <small class="mobile">DESLIZE PARA CIMA</small>
+        </div>
+      </div>
+
+      <div id="phase4ScrollSpace" class="phase4-scroll-space"></div>
+    </section>
+
+    <section id="screenPhase4Title" class="screen center-screen phase4-title-screen">
+      <div id="phase4TitleCover" class="phase4-title-cover" aria-hidden="true"></div>
+      <div class="phase4-title-vignette" aria-hidden="true"></div>
+
+      <div class="phase4-title-copy">
+        <p class="micro">O SINAL TEM UM NOME.</p>
+        <h2>FREQUÊNCIA</h2>
+        <p class="phase4-artist">O MATEO</p>
+        <div class="phase4-audio-line" aria-hidden="true"><i id="phase4AudioPulse"></i></div>
+        <p class="phase4-listening">TRANSMISSÃO 04</p>
+      </div>
+    </section>
+
+    <section id="screenPhase4End" class="screen center-screen phase4-end">
+      <div class="phase4-end-bg" aria-hidden="true"></div>
+      <div class="end-wrap">
+        <p class="micro">04 // REVELAÇÃO CONCLUÍDA</p>
+        <h2>AGORA VOCÊ<br>SABE O NOME.</h2>
+        <p class="next">AINDA NÃO SABE TUDO.</p>
+        <div class="phase4-next-mark" aria-hidden="true">05</div>
+        <button id="phase4NextBtn" class="action action-small campaign-next" type="button">
+          <span>CONTINUAR PARA A DECODIFICAÇÃO</span><i></i>
+        </button>
+        <button id="phase4AgainBtn" class="campaign-replay" type="button">
+          VER NOVAMENTE
+        </button>
+      </div>
+    </section>
+
+
+    <section id="screenPhase5Intro" class="screen center-screen phase5-intro">
+      <div class="phase5-cover-ghost" aria-hidden="true"></div>
+      <div class="phase5-grid" aria-hidden="true"></div>
+      <div class="phase5-intro-copy">
+        <p id="phase5Return" class="micro">VOCÊ JÁ CONHECE O SINAL.</p>
+        <h2>AGORA DESCUBRA<br><em>QUANDO ELE CHEGA.</em></h2>
+        <p class="phase5-sub">OITO FREQUÊNCIAS. UMA DATA.</p>
+        <button id="phase5BeginBtn" class="action action-small" type="button">
+          <span>INICIAR DECODIFICAÇÃO</span><i></i>
+        </button>
+      </div>
+    </section>
+
+    <section id="screenPhase5Scan" class="screen phase5-scan phase5-scan-v3">
+      <div class="phase5-cover-ghost phase5-cover-ghost-scan" aria-hidden="true"></div>
+      <div class="p5-radio-texture" aria-hidden="true"></div>
+      <div class="phase5-scan-vignette" aria-hidden="true"></div>
+
+      <div class="phase5-scan-ui p5-ui-v3">
+        <div class="phase5-scan-head">
+          <p class="micro">05 // DECODIFICAÇÃO</p>
+          <h2>ENCONTRE AS<br>FREQUÊNCIAS.</h2>
+        </div>
+
+        <div class="p5-station-zone" id="p5StationZone">
+          <div class="p5-track" aria-hidden="true">
+            <i id="phase5Scanner" class="p5-scanner-v3"></i>
+          </div>
+
+          <div id="phase5Nodes" class="p5-stations">
+            <button type="button" data-signal="1" data-freq="89.7"><i></i><b>89.7</b></button>
+            <button type="button" data-signal="2" data-freq="92.3"><i></i><b>92.3</b></button>
+            <button type="button" data-signal="3" data-freq="94.8"><i></i><b>94.8</b></button>
+            <button type="button" data-signal="4" data-freq="97.4"><i></i><b>97.4</b></button>
+            <button type="button" data-signal="5" data-freq="100.1"><i></i><b>100.1</b></button>
+            <button type="button" data-signal="6" data-freq="102.7"><i></i><b>102.7</b></button>
+            <button type="button" data-signal="7" data-freq="105.3"><i></i><b>105.3</b></button>
+            <button type="button" data-signal="8" data-freq="107.9"><i></i><b>107.9</b></button>
+          </div>
+
+          <p class="p5-zone-help desktop">PASSE O MOUSE DA ESQUERDA PARA A DIREITA — OU CLIQUE NOS PONTOS</p>
+          <p class="p5-zone-help mobile">DESLIZE DA ESQUERDA PARA A DIREITA — OU TOQUE NOS PONTOS</p>
+        </div>
+
+        <div id="phase5DateBuild" class="phase5-date-build p5-date-v3" aria-live="polite">
+          <span id="p5DateDay">__</span>
+          <b>.</b>
+          <span id="p5DateMonth">__</span>
+          <b>.</b>
+          <span id="p5DateYear">____</span>
+        </div>
+
+        <div class="phase5-counter p5-counter-v3">
+          <span><strong id="phase5FoundCount">0</strong> / 8 SINAIS DETECTADOS</span>
+          <div class="phase5-counter-bar"><i id="phase5CounterFill"></i></div>
+        </div>
+      </div>
+
+      <audio id="phase5Soundtrack" loop preload="auto"></audio>
+    </section>
+
+    <section id="screenPhase5Complete" class="screen center-screen phase5-complete">
+      <div class="phase5-complete-cover" aria-hidden="true"></div>
+      <div class="phase5-complete-vignette" aria-hidden="true"></div>
+
+      <div class="phase5-complete-copy">
+        <p class="micro">8 SINAIS ENCONTRADOS</p>
+        <h2>A TRANSMISSÃO<br>ESTÁ COMPLETA.</h2>
+        <p class="phase5-release-label">O SINAL TEM DATA.</p>
+        <div class="phase5-release-date">11.09.2026</div>
+
+        <button id="phase5NextBtn" class="phase5-presave-btn campaign-next" type="button">
+          <span>ENTRAR NO ÁLBUM</span>
+          <i></i>
+        </button>
+
+        <button id="phase5PresaveBtn" class="campaign-replay phase5-secondary-link" type="button">
+          PRÉ-SAVE
+        </button>
+
+        <p id="phase5PresaveStatus" class="phase5-presave-status"></p>
+      </div>
+    </section>
+
+    <section id="screenPhase5End" class="screen center-screen phase5-end">
+      <div class="phase5-end-mark" aria-hidden="true">06</div>
+      <div class="end-wrap">
+        <p class="micro">05 // TRANSMISSÃO DECODIFICADA</p>
+        <h2>O SINAL<br>TEM DATA.</h2>
+        <p class="phase5-end-date">11.09.2026</p>
+        <p class="next">A TRANSMISSÃO 06 ESTÁ ABERTA.</p>
+        <button id="phase5EndNextBtn" class="action action-small campaign-next" type="button">
+          <span>ENTRAR NO ÁLBUM</span><i></i>
+        </button>
+        <button id="phase5AgainBtn" class="campaign-replay" type="button">
+          DECODIFICAR NOVAMENTE
+        </button>
+      </div>
+    </section>
+
+
+    <section id="screenPhase6Story" class="screen p6x">
+      <nav class="p6x-nav" aria-label="Capítulos de Frequência">
+        <a href="#p6x-00" data-p6x="00">00</a>
+        <a href="#p6x-01" data-p6x="01">01</a>
+        <a href="#p6x-02" data-p6x="02">02</a>
+        <a href="#p6x-03" data-p6x="03">03</a>
+        <a href="#p6x-04" data-p6x="04">04</a>
+        <a href="#p6x-05" data-p6x="05">05</a>
+        <a href="#p6x-06" data-p6x="06">06</a>
+        <a href="#p6x-07" data-p6x="07">07</a>
+        <a href="#p6x-08" data-p6x="08">08</a>
+        <a href="#p6x-fim" data-p6x="fim">FIM</a>
+        <i><b id="p6xNavProgress"></b></i>
+      </nav>
+
+      <button id="p6xSound" class="p6x-sound" type="button">SOM <b>OFF</b></button>
+
+      <main class="p6x-page">
+
+        <section id="p6x-top" class="p6x-opening p6x-dark">
+          <div class="p6x-opening-cover" aria-hidden="true"></div>
+          <div class="p6x-opening-shade" aria-hidden="true"></div>
+          <div class="p6x-opening-copy p6x-reveal">
+            <p>05 // TRANSMISSÃO DECODIFICADA</p>
+            <h1>VOCÊ ENCONTROU<br>O SINAL.</h1>
+            <span>AGORA ENTRE NELE.</span>
+          </div>
+          <a href="#p6x-00" class="p6x-scroll">SCROLL <i></i></a>
+        </section>
+
+        <section id="p6x-00" data-p6x-section="00" class="p6x-concept p6x-off">
+          <div class="p6x-concept-copy p6x-reveal">
+            <p class="p6x-label">00 // O QUE É FREQUÊNCIA?</p>
+            <h2>SINTONIZAR.</h2>
+            <p>Existem coisas que sempre estiveram presentes, mas que só conseguimos perceber quando estamos na sintonia certa.</p>
+            <p>Como um sinal atravessando o ar, a presença de Deus não começa quando finalmente a percebemos. Ela já estava ali. O que muda é a nossa capacidade de ouvi-la.</p>
+            <blockquote>“Talvez Deus nunca tenha parado de falar.<br>Talvez nós só estivéssemos aprendendo a ouvir.”</blockquote>
+          </div>
+          <div class="p6x-concept-art p6x-reveal">
+            <div class="p6x-cover-float" data-p6x-tilt>
+              <img src="./assets6/cover.jpg" alt="Capa de Frequência">
+            </div>
+            <div class="p6x-frequency-line"><i></i></div>
+          </div>
+        </section>
+
+        <section class="p6x-map p6x-dark">
+          <div class="p6x-map-copy p6x-reveal">
+            <p class="p6x-label">A NARRATIVA</p>
+            <h2>8 FAIXAS.<br>1 HISTÓRIA.</h2>
+            <p>A tracklist funciona como mapa. Cada música muda a posição do personagem dentro da mesma transmissão.</p>
+          </div>
+          <div class="p6x-map-art p6x-reveal">
+            <img src="./assets6/tracklist.jpg" alt="Tracklist Frequência">
+          </div>
+        </section>
+
+        <section id="p6x-01" data-p6x-section="01" class="p6x-track p6x-dark" data-track="1">
+          <div class="p6x-track-copy p6x-reveal">
+            <p class="p6x-label">01 // OUVIR</p>
+            <h2>INTRO<br>FREQUÊNCIA</h2>
+            <strong>O sinal aparece. A transmissão é aberta.</strong>
+            <p>O primeiro momento do álbum não entrega uma resposta. Ele apenas confirma que existe alguma coisa atravessando o ruído.</p>
+          </div>
+          <div class="p6x-track-stage p6x-stage-cover" aria-hidden="true">
+            <div class="p6x-stage-cover-card" data-p6x-tilt>
+              <img src="./assets6/cover.jpg" alt="Arte da faixa Intro Frequência">
+              <div class="p6x-stage-cover-mask"></div>
+              <div class="p6x-stage-cover-copy">
+                <span>O MATEO</span>
+                <strong class="is-compact">INTRO<br>FREQUÊNCIA</strong>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="p6x-02" data-p6x-section="02" class="p6x-track p6x-off" data-track="2">
+          <div class="p6x-track-copy p6x-reveal">
+            <p class="p6x-label">02 // SENTIR</p>
+            <h2>ME<br>ENVOLVE</h2>
+            <strong>O que era distante começa a ocupar espaço.</strong>
+            <p>A presença deixa de ser observada de longe. Ela se aproxima e começa a envolver o ambiente inteiro.</p>
+          </div>
+          <div class="p6x-track-stage p6x-stage-cover" aria-hidden="true">
+            <div class="p6x-stage-cover-card" data-p6x-tilt>
+              <img src="./assets6/cover.jpg" alt="Arte da faixa Me Envolve">
+              <div class="p6x-stage-cover-mask"></div>
+              <div class="p6x-stage-cover-copy">
+                <span>O MATEO</span>
+                <strong>ME<br>ENVOLVE</strong>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="p6x-03" data-p6x-section="03" class="p6x-track p6x-dark" data-track="3">
+          <div class="p6x-track-copy p6x-reveal">
+            <p class="p6x-label">03 // FIRMAR</p>
+            <h2>INABALÁVEL</h2>
+            <strong>A experiência vira fundamento e firmeza.</strong>
+            <p>Aquilo que foi ouvido e sentido começa a virar base. A frequência deixa de ser apenas emoção e passa a sustentar.</p>
+          </div>
+          <div class="p6x-track-stage p6x-stage-cover" aria-hidden="true">
+            <div class="p6x-stage-cover-card" data-p6x-tilt>
+              <img src="./assets6/cover.jpg" alt="Arte da faixa Inabalável">
+              <div class="p6x-stage-cover-mask"></div>
+              <div class="p6x-stage-cover-copy">
+                <span>O MATEO</span>
+                <strong>INABALÁVEL</strong>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="p6x-photo-break p6x-off">
+          <div class="p6x-photo-break-img p6x-photo-bw"></div>
+          <div class="p6x-photo-break-copy p6x-reveal">
+            <p>O SINAL FOI PERCEBIDO.</p>
+            <h2>AGORA O DISCO<br>VIRA PARA DENTRO.</h2>
+          </div>
+        </section>
+
+        <section id="p6x-04" data-p6x-section="04" class="p6x-track p6x-off p6x-interlude" data-track="4">
+          <div class="p6x-track-copy p6x-reveal">
+            <p class="p6x-label">04 // SILENCIAR</p>
+            <h2>INTERLÚDIO</h2>
+            <strong>Uma troca de estação. O disco vira para dentro.</strong>
+            <p>O fluxo é interrompido. O espaço fica maior, o ruído perde força e a narrativa muda de direção: do ambiente para o interior.</p>
+          </div>
+          <div class="p6x-track-stage p6x-stage-cover" aria-hidden="true">
+            <div class="p6x-stage-cover-card" data-p6x-tilt>
+              <img src="./assets6/cover.jpg" alt="Arte da faixa Interlúdio">
+              <div class="p6x-stage-cover-mask"></div>
+              <div class="p6x-stage-cover-copy">
+                <span>O MATEO</span>
+                <strong>INTERLÚDIO</strong>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="p6x-05" data-p6x-section="05" class="p6x-track p6x-cold" data-track="5">
+          <div class="p6x-track-copy p6x-reveal">
+            <p class="p6x-label">05 // PENSAR</p>
+            <h2>STATE<br>OF MIND</h2>
+            <strong>A batalha passa a acontecer na mente.</strong>
+            <p>Depois do silêncio surgem pensamentos, interferências e outras vozes. A luta já não está ao redor. Está dentro.</p>
+          </div>
+          <div class="p6x-track-stage p6x-stage-cover" aria-hidden="true">
+            <div class="p6x-stage-cover-card" data-p6x-tilt>
+              <img src="./assets6/cover.jpg" alt="Arte da faixa State of Mind">
+              <div class="p6x-stage-cover-mask"></div>
+              <div class="p6x-stage-cover-copy is-cold">
+                <span>O MATEO</span>
+                <strong>STATE<br>OF MIND</strong>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="p6x-06" data-p6x-section="06" class="p6x-track p6x-off" data-track="6">
+          <div class="p6x-track-copy p6x-reveal">
+            <p class="p6x-label">06 // TOCAR</p>
+            <h2>FREQUÊNCIA<br>TÁTIL</h2>
+            <strong>O invisível deixa marcas que podem ser sentidas.</strong>
+            <p>A frequência deixa de existir apenas no ouvido. Ela ganha peso, textura e consequência.</p>
+          </div>
+          <div class="p6x-track-stage p6x-stage-cover" aria-hidden="true">
+            <div class="p6x-stage-cover-card" data-p6x-tilt>
+              <img src="./assets6/cover.jpg" alt="Arte da faixa Frequência Tátil">
+              <div class="p6x-stage-cover-mask"></div>
+              <div class="p6x-stage-cover-copy">
+                <span>O MATEO</span>
+                <strong class="is-compact">FREQUÊNCIA<br>TÁTIL</strong>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="p6x-07" data-p6x-section="07" class="p6x-track p6x-dark" data-track="7">
+          <div class="p6x-track-copy p6x-reveal">
+            <p class="p6x-label">07 // DECIDIR</p>
+            <h2>NÃO VOLTO<br>MAIS</h2>
+            <strong>Depois de ouvir, existe uma decisão.</strong>
+            <p>A história deixa de ser apenas percepção. Depois de tudo que foi ouvido, sentido e enfrentado, é preciso escolher uma direção.</p>
+          </div>
+          <div class="p6x-track-stage p6x-stage-cover" aria-hidden="true">
+            <div class="p6x-stage-cover-card" data-p6x-tilt>
+              <img src="./assets6/cover.jpg" alt="Arte da faixa Não Volto Mais">
+              <div class="p6x-stage-cover-mask"></div>
+              <div class="p6x-stage-cover-copy">
+                <span>O MATEO</span>
+                <strong class="is-compact">NÃO VOLTO<br>MAIS</strong>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="p6x-08" data-p6x-section="08" class="p6x-track p6x-off" data-track="8">
+          <div class="p6x-track-copy p6x-reveal">
+            <p class="p6x-label">08 // PERMANECER</p>
+            <h2>ESTOU<br>DE PÉ</h2>
+            <strong>A conclusão não é ausência de queda; é permanência.</strong>
+            <p>O personagem não termina perfeito. Termina de pé porque aprendeu para onde voltar quando tudo ao redor tenta mudar sua sintonia.</p>
+          </div>
+          <div class="p6x-track-stage p6x-stage-cover" aria-hidden="true">
+            <div class="p6x-stage-cover-card" data-p6x-tilt>
+              <img src="./assets6/cover.jpg" alt="Arte da faixa Estou de Pé">
+              <div class="p6x-stage-cover-mask"></div>
+              <div class="p6x-stage-cover-copy">
+                <span>O MATEO</span>
+                <strong class="is-compact">ESTOU<br>DE PÉ</strong>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="p6x-architecture p6x-dark">
+          <div class="p6x-arch-head p6x-reveal">
+            <p class="p6x-label">ARQUITETURA</p>
+            <h2>TRÊS MOVIMENTOS.</h2>
+          </div>
+          <article class="p6x-reveal">
+            <b>I</b><h3>SINAL</h3><small>FAIXAS 1–3</small>
+            <p>A frequência é percebida, envolve e começa a construir estabilidade.</p>
+          </article>
+          <article class="p6x-reveal">
+            <b>II</b><h3>INTERFERÊNCIA</h3><small>FAIXAS 4–5</small>
+            <p>O fluxo é interrompido. A luta muda do ambiente para a mente.</p>
+          </article>
+          <article class="p6x-reveal">
+            <b>III</b><h3>RESPOSTA</h3><small>FAIXAS 6–8</small>
+            <p>O sinal se torna tátil, exige uma decisão e termina em permanência.</p>
+          </article>
+        </section>
+
+        <section id="p6x-fim" data-p6x-section="fim" class="p6x-ending p6x-off">
+          <div class="p6x-ending-copy p6x-reveal">
+            <p class="p6x-label">FREQUÊNCIA // COMO UM TODO</p>
+            <h2>NÃO É SOBRE<br>DEUS COMEÇAR A FALAR.</h2>
+            <p>É sobre alguém aprender a ouvir.</p>
+            <h3>NÃO É SOBRE<br>NUNCA MAIS CAIR.</h3>
+            <p>É sobre descobrir para onde voltar.</p>
+            <blockquote>“Escute na ordem.<br>Existe uma história acontecendo.”</blockquote>
+          </div>
+          <div class="p6x-ending-art p6x-reveal">
+            <div class="p6x-ending-cover" data-p6x-tilt>
+              <img src="./assets6/cover.jpg" alt="Frequência — O Mateo">
+            </div>
+            <div class="p6x-ending-info">
+              <span>O MATEO</span>
+              <strong>FREQUÊNCIA</strong>
+              <b>11.09.2026</b>
+              <div class="p6x-visitor-counter" aria-label="Contagem de visitantes únicos">
+                <span>VISITANTES</span>
+                <img
+                  id="p6xVisitorBadge"
+                  src="https://visitor-badge.one9x.com/badge?page_id=omateo.frequencia.2026&namespace=omateo&unique=true&timeframe=86400&left_text=&left_color=%23f0ebe3&right_color=%23f0ebe3"
+                  alt="Total de visitantes únicos">
+                <small>ÚNICOS / 24H</small>
+              </div>
+              <a href="https://sndo.ffm.to/bp91y9b" target="_blank" rel="noopener noreferrer">RECEBER O SINAL <i></i></a>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </section>
+
   </main>
 
   <div id="toast" class="toast" aria-live="polite"></div>
 
+  <aside id="phaseTestPanel" class="phase-test-panel" aria-label="Modo de teste">
+    <button id="phaseTestClose" class="phase-test-close" type="button">×</button>
+    <p>TESTE // FASES</p>
+    <div>
+      <button type="button" data-test-phase="1">01</button>
+      <button type="button" data-test-phase="2">02</button>
+      <button type="button" data-test-phase="3">03</button>
+      <button type="button" data-test-phase="4">04</button>
+      <button type="button" data-test-phase="5">05</button>
+      <button type="button" data-test-phase="6">06</button>
+    </div>
+    <small>AUTOMAÇÃO OFF</small>
+  </aside>
+
+
+  <script src="./campaign-config.js"></script>
   <script src="./audio-data.js"></script>
+  <script src="./phase2-data.js"></script>
+  <script src="./phase3-data.js"></script>
+  <script src="./phase4-data.js"></script>
+  <script src="./phase5-data.js"></script>
+  <script src="./phase6-data.js"></script>
+  <script src="./analytics-config.js"></script>
+  <script src="./analytics.js"></script>
   <script src="./script.js"></script>
 </body>
 </html>
