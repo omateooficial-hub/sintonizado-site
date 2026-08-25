@@ -155,3 +155,16 @@ Foram adicionados:
 - `DEPLOY_GITHUB_PAGES.md`
 
 Para ativar o Analytics, substitua `G-XXXXXXXXXX` em `analytics-config.js`.
+
+
+## GITHUB IMAGE FIX
+
+As imagens e o áudio da Fase 6 agora estão embutidos em `phase6-data.js`.
+
+A Fase 6 NÃO depende mais da pasta `assets6`.
+Isso evita imagens quebradas no GitHub Pages quando pastas/arquivos binários
+não são enviados corretamente.
+
+Para corrigir um site já publicado, substitua apenas:
+- `phase6-data.js`
+- `script.js`
