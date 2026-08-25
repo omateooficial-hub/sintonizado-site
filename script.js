@@ -1571,8 +1571,14 @@ function p5Complete(){
     try{navigator.vibrate([25,30,25,30,45])}catch(e){}
   }
   show("phase5Complete");
-  scheduleCampaignAdvance(6,3200);
+  scheduleCampaignAdvance(6,1800);
 }
+
+document.addEventListener("visibilitychange",()=>{
+  if(!document.hidden && p5Done && screens.phase5Complete?.classList.contains("active")){
+    scheduleCampaignAdvance(6,700);
+  }
+});
 
 function openPhase5(){
   document.body.classList.remove("phase3-mode","phase4-mode");
@@ -1596,25 +1602,42 @@ phase5BeginBtn.addEventListener("click",()=>{
 });
 
 phase5NodeEls.forEach((el,i)=>{
-  el.addEventListener("click",(e)=>{
+  const hit=(e)=>{
     e.preventDefault();
     e.stopPropagation();
     p5Hit(i);
-  });
-  el.addEventListener("pointerdown",(e)=>{
-    e.preventDefault();
-    e.stopPropagation();
-    p5Hit(i);
-  });
+  };
+  el.addEventListener("pointerup",hit);
+  el.addEventListener("touchend",hit,{passive:false});
 });
 
 if(p5Zone){
-  p5Zone.addEventListener("pointermove",(e)=>p5MoveFromClientX(e.clientX),{passive:true});
-  p5Zone.addEventListener("pointerdown",(e)=>p5MoveFromClientX(e.clientX),{passive:true});
+  p5Zone.style.touchAction="none";
+
+  p5Zone.addEventListener("pointermove",(e)=>{
+    if(e.pointerType==="touch" && !e.isPrimary)return;
+    p5MoveFromClientX(e.clientX);
+  },{passive:true});
+
+  p5Zone.addEventListener("pointerdown",(e)=>{
+    p5MoveFromClientX(e.clientX);
+  },{passive:true});
+
+  p5Zone.addEventListener("touchstart",(e)=>{
+    const t=e.touches&&e.touches[0];
+    if(t){
+      e.preventDefault();
+      p5MoveFromClientX(t.clientX);
+    }
+  },{passive:false});
+
   p5Zone.addEventListener("touchmove",(e)=>{
     const t=e.touches&&e.touches[0];
-    if(t)p5MoveFromClientX(t.clientX);
-  },{passive:true});
+    if(t){
+      e.preventDefault();
+      p5MoveFromClientX(t.clientX);
+    }
+  },{passive:false});
 }
 
 phase5PresaveBtn.addEventListener("click",()=>{

@@ -168,3 +168,17 @@ não são enviados corretamente.
 Para corrigir um site já publicado, substitua apenas:
 - `phase6-data.js`
 - `script.js`
+
+
+## RESPONSIVE FINAL — PC + CELULAR
+
+Ajustes:
+- Fase 6 usa layout normal vertical no celular, sem sticky split-screen;
+- textos não ficam presos em alturas fixas;
+- títulos foram redimensionados para telas estreitas;
+- capa/tracklist usam largura responsiva e não são cortadas;
+- telas de conclusão das Fases 1–5 podem rolar em celulares baixos;
+- Fase 5 recebeu touchstart/touchmove dedicados;
+- pontos da Fase 5 têm áreas maiores para toque;
+- após completar a Fase 5, a Fase 6 abre automaticamente;
+- desktop preservado.
